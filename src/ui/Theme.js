@@ -6,6 +6,17 @@ const arcGrey = '#868686';
 
 export default createTheme({
   components: {
+    MuiFormControlLabel: {
+      styleOverrides: {
+        label: {
+          color: arcBlue,
+          fontWeight: 700,
+        },
+        labelPlacementStart: {
+          marginLeft: 0,
+        },
+      },
+    },
     MuiInputLabel: {
       styleOverrides: {
         standard: {
@@ -93,7 +104,7 @@ export default createTheme({
       fontWeight: 500,
       fontFamily: 'Raleway',
       color: arcBlue,
-      lineHeight: 1
+      lineHeight: 1,
     },
     subtitle1: {
       fontSize: '1.25rem',
