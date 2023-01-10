@@ -2,10 +2,18 @@ import React, { useState } from 'react';
 
 import Add from '@mui/icons-material/Add';
 import FormGroup from '@mui/material/FormGroup';
+import FilterList from '@mui/icons-material/FilterList';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import InputAdornment from '@mui/material/InputAdornment';
+import Paper from '@mui/material/Paper';
 import Switch from '@mui/material/Switch';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableHead from '@mui/material/TableHead';
+import TableContainer from '@mui/material/TableContainer';
+import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material';
@@ -14,9 +22,35 @@ import { makeStyles } from 'tss-react/mui';
 
 const useStyles = makeStyles()((theme) => ({}));
 
+function createData(
+  name,
+  date,
+  service,
+  features,
+  complexity,
+  platforms,
+  users,
+  total
+) {
+  return { name, date, service, features, complexity, platforms, users, total };
+}
+
 export default function ProjectManager() {
   const { classes } = useStyles();
   const theme = useTheme();
+
+  const [rows, setRows] = useState([
+    createData(
+      'Artem Suzdal',
+      '01/10/23',
+      'Website',
+      'E-Commerce',
+      'N/A',
+      'N/A',
+      'N/A',
+      '1500$'
+    ),
+  ]);
 
   const [websiteChecked, setWebsiteChecked] = useState(false);
   const [iOSChecked, setIOSChecked] = useState(false);
@@ -36,7 +70,7 @@ export default function ProjectManager() {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <Add color="primary" />
+                <Add color="primary" style={{ fontSize: 30 }} />
               </InputAdornment>
             ),
           }}
@@ -92,6 +126,48 @@ export default function ProjectManager() {
             labelPlacement="start"
           />
         </FormGroup>
+      </Grid>
+      <Grid
+        item
+        container
+        justifyContent="flex-end"
+        style={{ marginTop: '5em' }}
+      >
+        <Grid item style={{ marginRight: 75 }}>
+          <FilterList color="secondary" style={{ fontSize: 50 }} />
+        </Grid>
+      </Grid>
+      <Grid item>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>Service</TableCell>
+                <TableCell>Features</TableCell>
+                <TableCell>Complexity</TableCell>
+                <TableCell>Platforms</TableCell>
+                <TableCell>Users</TableCell>
+                <TableCell>Total</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow key={row.name}>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.date}</TableCell>
+                  <TableCell>{row.service}</TableCell>
+                  <TableCell>{row.features}</TableCell>
+                  <TableCell>{row.complexity}</TableCell>
+                  <TableCell>{row.platforms}</TableCell>
+                  <TableCell>{row.users}</TableCell>
+                  <TableCell>{row.total}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Grid>
     </Grid>
   );
