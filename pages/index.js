@@ -84,7 +84,8 @@ export default function ProjectManager() {
   const [softwareChecked, setSoftwareChecked] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [name, setName] = useState('');
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState(new Date());
+  const [total, setTotal] = useState('');
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -205,7 +206,12 @@ export default function ProjectManager() {
             </Table>
           </TableContainer>
         </Grid>
-        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <Dialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          fullWidth
+          maxWidth="md"
+        >
           <Grid container justifyContent="center">
             <Grid item>
               <Typography variant="h1" gutterBottom>
@@ -214,28 +220,56 @@ export default function ProjectManager() {
             </Grid>
           </Grid>
           <DialogContent>
-            <Grid container>
-              <Grid item container direction="column">
-                <Grid item>
-                  <TextField
-                    label="Name"
-                    id="name"
-                    value={name}
-                    variant="standard"
-                    onChange={(event) => setName(event.target.value)}
-                  />
+            <Grid container justifyContent="space-between">
+              <Grid item>
+                <Grid item container direction="column" sm>
+                  <Grid item>
+                    <TextField
+                      label="Name"
+                      id="name"
+                      value={name}
+                      variant="standard"
+                      onChange={(event) => setName(event.target.value)}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
-              <Grid item container direction="column">
-                <Grid item>
-                  <DatePicker
-                    value={date}
-                    onChange={(newDate) => setDate(newDate)}
-                    views={['month', 'day', 'year']}
-                    renderInput={(params) => (
-                      <TextField variant="standard" {...params} />
-                    )}
-                  />
+              <Grid item>
+                <Grid
+                  item
+                  container
+                  direction="column"
+                  style={{ marginTop: 16 }}
+                  sm
+                >
+                  <Grid item>
+                    <DatePicker
+                      value={date}
+                      onChange={(newDate) => setDate(newDate)}
+                      views={['month', 'day', 'year']}
+                      renderInput={(params) => (
+                        <TextField variant="standard" {...params} />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item>
+                <Grid item container direction="column" sm>
+                  <Grid item>
+                    <TextField
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">$</InputAdornment>
+                        ),
+                      }}
+                      label="Total"
+                      id="total"
+                      value={total}
+                      variant="standard"
+                      onChange={(event) => setTotal(event.target.value)}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
