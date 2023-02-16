@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import Add from '@mui/icons-material/Add';
+import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import FormGroup from '@mui/material/FormGroup';
@@ -28,9 +29,19 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
+import { format } from 'date-fns';
 import { makeStyles } from 'tss-react/mui';
 
 const useStyles = makeStyles()((theme) => ({
+  button: {
+    color: '#fff',
+    backgroundColor: theme.palette.common.orange,
+    borderRadius: 50,
+    textTransform: 'none',
+    '&.hover': {
+      backgroundColor: theme.palette.secondary.light,
+    },
+  },
   service: {
     fontWeight: '300!important',
   },
@@ -69,7 +80,7 @@ export default function ProjectManager() {
     ),
     createData(
       'Bill Gates',
-      '01/20/2023',
+      '01/20/23',
       'Custom Software',
       'GPS, Push Notifications, Users/Authentication, File Transfer',
       'Medium',
@@ -79,7 +90,7 @@ export default function ProjectManager() {
     ),
     createData(
       'Steve Jobs',
-      '01/23/2023',
+      '01/23/23',
       'Custom Software',
       'Photo/Video, File Transfer, Users/Authentication',
       'Low',
@@ -112,6 +123,23 @@ export default function ProjectManager() {
   const [users, setUsers] = useState('');
   const [platforms, setPlatforms] = useState([]);
   const [features, setFeatures] = useState([]);
+
+  const addProject = () => {
+    setRows([
+      ...rows,
+      createData(
+        name,
+        format(date, 'MM/dd/yy'),
+        service,
+        features.join(', '),
+        complexity,
+        platforms.join(', '),
+        users,
+        total
+      ),
+    ]);
+    setDialogOpen(false);
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -382,12 +410,7 @@ export default function ProjectManager() {
                 </Grid>
               </Grid>
               <Grid item>
-                <Grid
-                  item
-                  container
-                  direction="column"
-                  sm
-                >
+                <Grid item container direction="column" sm>
                   <Grid item>
                     <TextField
                       InputProps={{
@@ -402,12 +425,11 @@ export default function ProjectManager() {
                       onChange={(event) => setTotal(event.target.value)}
                     />
                   </Grid>
-                  <Grid item>
+                  <Grid item style={{ alignSelf: 'flex-end' }}>
                     <Grid
                       item
                       container
                       direction="column"
-                      alignItems="flex-end"
                       style={{ marginTop: '5em' }}
                     >
                       <Grid item>
@@ -449,31 +471,55 @@ export default function ProjectManager() {
                           />
                         </RadioGroup>
                       </Grid>
-                      <Grid item style={{ marginTop: '5em' }}>
-                        <Select
-                          labelId="features"
-                          style={{ width: '12em' }}
-                          MenuProps={{ style: { zIndex: 1302 } }}
-                          id="features"
-                          multiple
-                          displayEmpty
-                          variant="standard"
-                          value={features}
-                          renderValue={
-                            features.length > 0 ? undefined : () => 'Features'
-                          }
-                          onChange={(event) => setFeatures(event.target.value)}
-                        >
-                          {featureOptions.map((option) => (
-                            <MenuItem key={option} value={option}>
-                              {option}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </Grid>
                     </Grid>
                   </Grid>
                 </Grid>
+                <Grid item style={{ marginTop: '5em' }}>
+                  <Select
+                    labelId="features"
+                    style={{ width: '12em' }}
+                    MenuProps={{ style: { zIndex: 1302 } }}
+                    id="features"
+                    multiple
+                    displayEmpty
+                    variant="standard"
+                    value={features}
+                    renderValue={
+                      features.length > 0 ? undefined : () => 'Features'
+                    }
+                    onChange={(event) => setFeatures(event.target.value)}
+                  >
+                    {featureOptions.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid
+              container
+              justifyContent="center"
+              style={{ marginTop: '3em' }}
+            >
+              <Grid item>
+                <Button
+                  color="primary"
+                  onClick={() => setDialogOpen(false)}
+                  style={{ fontWeight: 300 }}
+                >
+                  Cancel
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  onClick={addProject}
+                  className={classes.button}
+                >
+                  Add Project+
+                </Button>
               </Grid>
             </Grid>
           </DialogContent>
