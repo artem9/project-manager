@@ -8,9 +8,11 @@ import FilterList from '@mui/icons-material/FilterList';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import InputAdornment from '@mui/material/InputAdornment';
+import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
+import Select from '@mui/material/Select';
 import Switch from '@mui/material/Switch';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -87,6 +89,16 @@ export default function ProjectManager() {
     ),
   ]);
 
+  const platformOptions = ['Web', 'iOS', 'Android'];
+  const featureOptions = [
+    'Photo/Video',
+    'GPS',
+    'File Transfer',
+    'User/Authentication',
+    'Biometrics',
+    'Push Notifications',
+  ];
+
   const [websiteChecked, setWebsiteChecked] = useState(false);
   const [iOSChecked, setIOSChecked] = useState(false);
   const [androidChecked, setAndroidChecked] = useState(false);
@@ -98,6 +110,8 @@ export default function ProjectManager() {
   const [service, setService] = useState('');
   const [complexity, setComplexity] = useState('');
   const [users, setUsers] = useState('');
+  const [platforms, setPlatforms] = useState([]);
+  const [features, setFeatures] = useState([]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -281,6 +295,27 @@ export default function ProjectManager() {
                         />
                       </RadioGroup>
                     </Grid>
+                    <Grid item style={{ marginTop: '5em' }}>
+                      <Select
+                        labelId="platforms"
+                        style={{ width: '12em' }}
+                        id="platforms"
+                        multiple
+                        displayEmpty
+                        variant="standard"
+                        value={platforms}
+                        renderValue={
+                          platforms.length > 0 ? undefined : () => 'Platforms'
+                        }
+                        onChange={(event) => setPlatforms(event.target.value)}
+                      >
+                        {platformOptions.map((option) => (
+                          <MenuItem key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
@@ -351,7 +386,6 @@ export default function ProjectManager() {
                   item
                   container
                   direction="column"
-                  alignItems="flex-end"
                   sm
                 >
                   <Grid item>
@@ -373,6 +407,7 @@ export default function ProjectManager() {
                       item
                       container
                       direction="column"
+                      alignItems="flex-end"
                       style={{ marginTop: '5em' }}
                     >
                       <Grid item>
@@ -413,6 +448,28 @@ export default function ProjectManager() {
                             control={<Radio />}
                           />
                         </RadioGroup>
+                      </Grid>
+                      <Grid item style={{ marginTop: '5em' }}>
+                        <Select
+                          labelId="features"
+                          style={{ width: '12em' }}
+                          MenuProps={{ style: { zIndex: 1302 } }}
+                          id="features"
+                          multiple
+                          displayEmpty
+                          variant="standard"
+                          value={features}
+                          renderValue={
+                            features.length > 0 ? undefined : () => 'Features'
+                          }
+                          onChange={(event) => setFeatures(event.target.value)}
+                        >
+                          {featureOptions.map((option) => (
+                            <MenuItem key={option} value={option}>
+                              {option}
+                            </MenuItem>
+                          ))}
+                        </Select>
                       </Grid>
                     </Grid>
                   </Grid>

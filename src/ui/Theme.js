@@ -43,6 +43,15 @@ export default createTheme({
         },
       },
     },
+    MuiSvgIcon: {
+      styleOverrides: {
+        root: {
+          '&.MuiSelect-icon': {
+            fill: arcOrange,
+          },
+        },
+      },
+    },
     MuiTableCell: {
       styleOverrides: {
         head: {
@@ -57,7 +66,7 @@ export default createTheme({
           borderColor: arcBlue,
           borderWidth: 2,
         },
-      }
+      },
     },
   },
   palette: {
