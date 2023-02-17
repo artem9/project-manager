@@ -124,6 +124,17 @@ export default function ProjectManager() {
   const [platforms, setPlatforms] = useState([]);
   const [features, setFeatures] = useState([]);
 
+  const clearForm = () => {
+    setName('');
+    setDate(new Date());
+    setTotal('');
+    setService('');
+    setComplexity('');
+    setUsers('');
+    setPlatforms([]);
+    setFeatures([]);
+  };
+
   const addProject = () => {
     setRows([
       ...rows,
@@ -139,7 +150,19 @@ export default function ProjectManager() {
       ),
     ]);
     setDialogOpen(false);
+    clearForm();
   };
+
+  const isNotComplete = () =>
+    service === 'Website'
+      ? name.length === 0 || total.length === 0 || features.length === 0
+      : name.length === 0 ||
+        total.length === 0 ||
+        features.length === 0 ||
+        users.length === 0 ||
+        complexity.length === 0 ||
+        platforms.length === 0 ||
+        service.length === 0;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -517,6 +540,7 @@ export default function ProjectManager() {
                   variant="contained"
                   onClick={addProject}
                   className={classes.button}
+                  disabled={isNotComplete()}
                 >
                   Add Project+
                 </Button>
