@@ -101,7 +101,7 @@ export default function ProjectManager() {
   ]);
 
   const platformOptions = ['Web', 'iOS', 'Android'];
-  const featureOptions = [
+  var featureOptions = [
     'Photo/Video',
     'GPS',
     'File Transfer',
@@ -109,6 +109,7 @@ export default function ProjectManager() {
     'Biometrics',
     'Push Notifications',
   ];
+  var websiteOptions = ['Basic', 'Interactive', 'E-Commerce'];
 
   const [websiteChecked, setWebsiteChecked] = useState(false);
   const [iOSChecked, setIOSChecked] = useState(false);
@@ -143,10 +144,10 @@ export default function ProjectManager() {
         format(date, 'MM/dd/yy'),
         service,
         features.join(', '),
-        complexity,
-        platforms.join(', '),
-        users,
-        total
+        service === 'Website' ? 'N/A' : complexity,
+        service === 'Website' ? 'N/A' : platforms.join(', '),
+        service === 'Website' ? 'N/A' : users,
+        `$${total}`
       ),
     ]);
     setDialogOpen(false);
@@ -155,7 +156,10 @@ export default function ProjectManager() {
 
   const isNotComplete = () =>
     service === 'Website'
-      ? name.length === 0 || total.length === 0 || features.length === 0
+      ? name.length === 0 ||
+        total.length === 0 ||
+        features.length === 0 ||
+        features.length > 1
       : name.length === 0 ||
         total.length === 0 ||
         features.length === 0 ||
@@ -324,7 +328,10 @@ export default function ProjectManager() {
                         aria-label="service"
                         name="service"
                         value={service}
-                        onChange={(event) => setService(event.target.value)}
+                        onChange={(event) => {
+                          setService(event.target.value);
+                          setFeatures([]);
+                        }}
                       >
                         <FormControlLabel
                           classes={{ label: classes.service }}
@@ -348,6 +355,7 @@ export default function ProjectManager() {
                     </Grid>
                     <Grid item style={{ marginTop: '5em' }}>
                       <Select
+                        disabled={service === 'Website'}
                         labelId="platforms"
                         style={{ width: '12em' }}
                         id="platforms"
@@ -409,18 +417,21 @@ export default function ProjectManager() {
                           }
                         >
                           <FormControlLabel
+                            disabled={service === 'Website'}
                             classes={{ label: classes.service }}
                             value="Low"
                             label="Low"
                             control={<Radio />}
                           />
                           <FormControlLabel
+                            disabled={service === 'Website'}
                             classes={{ label: classes.service }}
                             value="Medium"
                             label="Medium"
                             control={<Radio />}
                           />
                           <FormControlLabel
+                            disabled={service === 'Website'}
                             classes={{ label: classes.service }}
                             value="High"
                             label="High"
@@ -466,6 +477,7 @@ export default function ProjectManager() {
                           onChange={(event) => setUsers(event.target.value)}
                         >
                           <FormControlLabel
+                            disabled={service === 'Website'}
                             classes={{
                               label: classes.service,
                               root: classes.users,
@@ -475,6 +487,7 @@ export default function ProjectManager() {
                             control={<Radio />}
                           />
                           <FormControlLabel
+                            disabled={service === 'Website'}
                             classes={{
                               label: classes.service,
                               root: classes.users,
@@ -484,6 +497,7 @@ export default function ProjectManager() {
                             control={<Radio />}
                           />
                           <FormControlLabel
+                            disabled={service === 'Website'}
                             classes={{
                               label: classes.service,
                               root: classes.users,
@@ -512,6 +526,9 @@ export default function ProjectManager() {
                     }
                     onChange={(event) => setFeatures(event.target.value)}
                   >
+                    {service === 'Website'
+                      ? (featureOptions = websiteOptions)
+                      : null}
                     {featureOptions.map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}

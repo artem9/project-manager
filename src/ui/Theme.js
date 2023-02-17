@@ -43,6 +43,15 @@ export default createTheme({
         },
       },
     },
+    MuiRadio: {
+      styleOverrides: {
+        root: {
+          '&.Mui-checked': {
+            color: arcOrange,
+          },
+        },
+      },
+    },
     MuiSvgIcon: {
       styleOverrides: {
         root: {
