@@ -58,9 +58,20 @@ function createData(
   complexity,
   platforms,
   users,
-  total
+  total,
+  search
 ) {
-  return { name, date, service, features, complexity, platforms, users, total };
+  return {
+    name,
+    date,
+    service,
+    features,
+    complexity,
+    platforms,
+    users,
+    total,
+    search,
+  };
 }
 
 export default function ProjectManager() {
@@ -76,7 +87,8 @@ export default function ProjectManager() {
       'N/A',
       'N/A',
       'N/A',
-      '1500$'
+      '1500$',
+      true
     ),
     createData(
       'Bill Gates',
@@ -86,7 +98,8 @@ export default function ProjectManager() {
       'Medium',
       'Web Application',
       '0-10',
-      '$1600'
+      '$1600',
+      true
     ),
     createData(
       'Steve Jobs',
@@ -96,7 +109,8 @@ export default function ProjectManager() {
       'Low',
       'Web Application',
       '10-100',
-      '$1250'
+      '$1250',
+      true
     ),
   ]);
 
@@ -111,11 +125,14 @@ export default function ProjectManager() {
   ];
   var websiteOptions = ['Basic', 'Interactive', 'E-Commerce'];
 
+  const [search, setSearch] = useState('');
   const [websiteChecked, setWebsiteChecked] = useState(false);
   const [iOSChecked, setIOSChecked] = useState(false);
   const [androidChecked, setAndroidChecked] = useState(false);
   const [softwareChecked, setSoftwareChecked] = useState(false);
+
   const [dialogOpen, setDialogOpen] = useState(false);
+
   const [name, setName] = useState('');
   const [date, setDate] = useState(new Date());
   const [total, setTotal] = useState('');
@@ -147,7 +164,8 @@ export default function ProjectManager() {
         service === 'Website' ? 'N/A' : complexity,
         service === 'Website' ? 'N/A' : platforms.join(', '),
         service === 'Website' ? 'N/A' : users,
-        `$${total}`
+        `$${total}`,
+        true
       ),
     ]);
     setDialogOpen(false);
@@ -168,6 +186,31 @@ export default function ProjectManager() {
         platforms.length === 0 ||
         service.length === 0;
 
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+
+    const rowData = rows.map(
+      (row) =>
+        Object.values(row).filter((option) => typeof option !== 'boolean') // exclude search prop
+    );
+
+    const matches = rowData.map((row) =>
+      row.map((option) =>
+        option.toLowerCase().includes(event.target.value.toLowerCase())
+      )
+    );
+
+    const newRows = [...rows];
+
+    matches.map((row, index) =>
+      row.includes(true)
+        ? (newRows[index].search = true)
+        : (newRows[index].search = false)
+    );
+
+    setRows(newRows);
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Grid container direction="column">
@@ -178,6 +221,8 @@ export default function ProjectManager() {
           <TextField
             placeholder="Search project deatils or create a new entry."
             variant="standard"
+            value={search}
+            onChange={handleSearch}
             style={{ width: '35em', marginLeft: '5em' }}
             InputProps={{
               endAdornment: (
@@ -269,20 +314,22 @@ export default function ProjectManager() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
-                  <TableRow key={row.name}>
-                    <TableCell align="center">{row.name}</TableCell>
-                    <TableCell align="center">{row.date}</TableCell>
-                    <TableCell align="center">{row.service}</TableCell>
-                    <TableCell align="center" style={{ maxWidth: '5em' }}>
-                      {row.features}
-                    </TableCell>
-                    <TableCell align="center">{row.complexity}</TableCell>
-                    <TableCell align="center">{row.platforms}</TableCell>
-                    <TableCell align="center">{row.users}</TableCell>
-                    <TableCell align="center">{row.total}</TableCell>
-                  </TableRow>
-                ))}
+                {rows
+                  .filter((row) => row.search)
+                  .map((row) => (
+                    <TableRow key={row.name}>
+                      <TableCell align="center">{row.name}</TableCell>
+                      <TableCell align="center">{row.date}</TableCell>
+                      <TableCell align="center">{row.service}</TableCell>
+                      <TableCell align="center" style={{ maxWidth: '5em' }}>
+                        {row.features}
+                      </TableCell>
+                      <TableCell align="center">{row.complexity}</TableCell>
+                      <TableCell align="center">{row.platforms}</TableCell>
+                      <TableCell align="center">{row.users}</TableCell>
+                      <TableCell align="center">{row.total}</TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
