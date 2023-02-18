@@ -15,12 +15,6 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
 import Select from '@mui/material/Select';
 import Switch from '@mui/material/Switch';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableHead from '@mui/material/TableHead';
-import TableContainer from '@mui/material/TableContainer';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material';
@@ -31,6 +25,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import { format } from 'date-fns';
 import { makeStyles } from 'tss-react/mui';
+
+import EnhancedTable from '../src/ui/EnhancedTable';
 
 const useStyles = makeStyles()((theme) => ({
   button: {
@@ -299,40 +295,7 @@ export default function ProjectManager() {
           </Grid>
         </Grid>
         <Grid item style={{ marginBottom: '15em' }}>
-          <TableContainer component={Paper} elevation={0}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center">Name</TableCell>
-                  <TableCell align="center">Date</TableCell>
-                  <TableCell align="center">Service</TableCell>
-                  <TableCell align="center">Features</TableCell>
-                  <TableCell align="center">Complexity</TableCell>
-                  <TableCell align="center">Platforms</TableCell>
-                  <TableCell align="center">Users</TableCell>
-                  <TableCell align="center">Total</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows
-                  .filter((row) => row.search)
-                  .map((row) => (
-                    <TableRow key={row.name}>
-                      <TableCell align="center">{row.name}</TableCell>
-                      <TableCell align="center">{row.date}</TableCell>
-                      <TableCell align="center">{row.service}</TableCell>
-                      <TableCell align="center" style={{ maxWidth: '5em' }}>
-                        {row.features}
-                      </TableCell>
-                      <TableCell align="center">{row.complexity}</TableCell>
-                      <TableCell align="center">{row.platforms}</TableCell>
-                      <TableCell align="center">{row.users}</TableCell>
-                      <TableCell align="center">{row.total}</TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <EnhancedTable rows={rows} />
         </Grid>
         <Dialog
           open={dialogOpen}
