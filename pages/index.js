@@ -284,17 +284,7 @@ export default function ProjectManager() {
             />
           </FormGroup>
         </Grid>
-        <Grid
-          item
-          container
-          justifyContent="flex-end"
-          style={{ marginTop: '5em' }}
-        >
-          <Grid item style={{ marginRight: 75 }}>
-            <FilterList color="secondary" style={{ fontSize: 50 }} />
-          </Grid>
-        </Grid>
-        <Grid item style={{ marginBottom: '15em' }}>
+        <Grid item style={{ marginBottom: '15em', marginTop: '5em' }}>
           <EnhancedTable rows={rows} />
         </Grid>
         <Dialog

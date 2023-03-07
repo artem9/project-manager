@@ -77,6 +77,21 @@ export default createTheme({
         },
       },
     },
+    MuiTableSortLabel: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            color: arcOrange,
+          },
+          '&.Mui-active': {
+            color: arcOrange,
+          },
+        },
+        icon: {
+          fill: arcOrange,
+        },
+      },
+    },
   },
   palette: {
     common: {
