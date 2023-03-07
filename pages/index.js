@@ -137,6 +137,7 @@ export default function ProjectManager() {
   const [users, setUsers] = useState('');
   const [platforms, setPlatforms] = useState([]);
   const [features, setFeatures] = useState([]);
+  const [page, setPage] = useState(0);
 
   const clearForm = () => {
     setName('');
@@ -205,6 +206,7 @@ export default function ProjectManager() {
     );
 
     setRows(newRows);
+    setPage(0);
   };
 
   return (
@@ -284,8 +286,8 @@ export default function ProjectManager() {
             />
           </FormGroup>
         </Grid>
-        <Grid item style={{ marginBottom: '15em', marginTop: '5em' }}>
-          <EnhancedTable rows={rows} />
+        <Grid item style={{ marginBottom: '35em', marginTop: '5em' }}>
+          <EnhancedTable rows={rows} page={page} setPage={setPage} />
         </Grid>
         <Dialog
           open={dialogOpen}
