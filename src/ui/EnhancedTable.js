@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -142,17 +141,15 @@ function EnhancedTableHead(props) {
   );
 }
 
-EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
-
 function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
+  const { numSelected, rows, selected, setRows, setSelected } = props;
+  const onDelete = () => {
+    const newRows = [...rows];
+    const selectedRows = newRows.filter((row) => selected.includes(row.name));
+
+    selectedRows.map((row) => (row.search = false));
+    setRows(newRows);
+  };
 
   return (
     <Toolbar
@@ -190,7 +187,7 @@ function EnhancedTableToolbar(props) {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={onDelete}>
             <DeleteIcon style={{ fontSize: 30 }} color="primary" />
           </IconButton>
         </Tooltip>
@@ -204,10 +201,6 @@ function EnhancedTableToolbar(props) {
     </Toolbar>
   );
 }
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
 
 export default function EnhancedTable(props) {
   const [order, setOrder] = React.useState('asc');
@@ -264,7 +257,13 @@ export default function EnhancedTable(props) {
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }} elevation={0}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          rows={props.rows}
+          selected={selected}
+          setRows={props.setRows}
+          setSelected={setSelected}
+          numSelected={selected.length}
+        />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
