@@ -2,6 +2,8 @@ import * as React from 'react';
 
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -143,11 +145,33 @@ function EnhancedTableHead(props) {
 
 function EnhancedTableToolbar(props) {
   const { numSelected, rows, selected, setRows, setSelected } = props;
+  const [undo, setUndo] = React.useState([]);
+  const [alert, setAlert] = React.useState({
+    open: false,
+    color: '#FF3232',
+    message: 'Row deleted!',
+  });
+
   const onDelete = () => {
     const newRows = [...rows];
     const selectedRows = newRows.filter((row) => selected.includes(row.name));
 
     selectedRows.map((row) => (row.search = false));
+    setRows(newRows);
+    setUndo(selectedRows);
+    setSelected([]);
+
+    setAlert({ ...alert, open: true });
+  };
+
+  const onUndo = () => {
+    setAlert({ ...alert, open: false });
+    const newRows = [...rows];
+    const redo = [...undo];
+
+    redo.map((row) => (row.search = true));
+    Array.prototype.push.apply(newRows, ...redo);
+
     setRows(newRows);
   };
 
@@ -198,6 +222,26 @@ function EnhancedTableToolbar(props) {
           </IconButton>
         </Tooltip>
       )}
+      <Snackbar
+        action={
+          <Button style={{ color: '#fff' }} onClick={onUndo}>
+            Undo
+          </Button>
+        }
+        open={alert.open}
+        ContentProps={{ style: { backgroundColor: alert.color } }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        message={alert.message}
+        onClose={(event, reason) => {
+          if (reason === 'clickaway') {
+            setAlert({ ...alert, open: false });
+            const newRows = [...rows];
+            const names = [...undo.map((row) => row.name)];
+
+            setRows(newRows.filter((row) => !name.includes(row.name)));
+          }
+        }}
+      />
     </Toolbar>
   );
 }
