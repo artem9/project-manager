@@ -292,6 +292,10 @@ export default function ProjectManager() {
             page={page}
             setPage={setPage}
             setRows={setRows}
+            websiteChecked={websiteChecked}
+            iOSChecked={iOSChecked}
+            androidChecked={androidChecked}
+            softwareChecked={softwareChecked}
           />
         </Grid>
         <Dialog
