@@ -153,6 +153,7 @@ function EnhancedTableToolbar(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openMenu, setOpenMenu] = React.useState(false);
   const [totalFilter, setTotalFilter] = React.useState('>');
+  const [filterPrice, setFilterPrice] = React.useState('');
   const [alert, setAlert] = React.useState({
     open: false,
     color: '#FF3232',
@@ -167,6 +168,49 @@ function EnhancedTableToolbar(props) {
   const handleClose = () => {
     setAnchorEl(null);
     setOpenMenu(false);
+  };
+
+  const handleTotalFilter = (event) => {
+    setFilterPrice(event.target.value);
+
+    if (event.target.value !== '') {
+      const newRows = [...rows];
+
+      newRows.map((row) =>
+        eval(
+          `${event.target.value} ${
+            totalFilter === '=' ? '===' : totalFilter
+          } ${row.total.slice(1, row.total.length)}`
+        )
+          ? (row.search = true)
+          : (row.search = false)
+      );
+
+      setRows(newRows);
+    } else {
+      const newRows = [...rows];
+      newRows.map((row) => (row.search = true));
+
+      setRows(newRows);
+    }
+  };
+
+  const filterChange = (operator) => {
+    if (filterPrice !== '') {
+      const newRows = [...rows];
+
+      newRows.map((row) =>
+        eval(
+          `${filterPrice} ${
+            operator === '=' ? '===' : operator
+          } ${row.total.slice(1, row.total.length)}`
+        )
+          ? (row.search = true)
+          : (row.search = false)
+      );
+
+      setRows(newRows);
+    }
   };
 
   const onDelete = () => {
@@ -263,6 +307,8 @@ function EnhancedTableToolbar(props) {
         aria-labelledby="menu-positioned-button"
         anchorEl={anchorEl}
         open={openMenu}
+        onClose={handleClose}
+        MenuListProps={{ onMouseLeave: handleClose }}
         elevation={0}
         style={{ zIndex: 1302 }}
         anchorOrigin={{
@@ -282,24 +328,49 @@ function EnhancedTableToolbar(props) {
           }}
         >
           <TextField
+            placeholder="Enter a price to filter"
+            value={filterPrice}
+            onChange={handleTotalFilter}
             variant="standard"
             InputProps={{
               type: 'number',
+              startAdornment: (
+                <InputAdornment
+                  position="start"
+                  sx={{
+                    fontSize: '1.5rem',
+                    color: (theme) => theme.palette.common.orange,
+                  }}
+                >
+                  <span>$</span>
+                </InputAdornment>
+              ),
               endAdornment: (
                 <InputAdornment
                   position="end"
-                  style={{ pointer: 'click' }}
-                  onClick={() =>
+                  sx={{
+                    cursor: 'pointer',
+                    fontSize: '2rem',
+                    color: (theme) => theme.palette.common.orange,
+                  }}
+                  onClick={() => {
                     setTotalFilter(
                       totalFilter === '>'
                         ? '<'
                         : totalFilter === '<'
                         ? '='
                         : '>'
-                    )
-                  }
+                    );
+                    filterChange(
+                      totalFilter === '>'
+                        ? '<'
+                        : totalFilter === '<'
+                        ? '='
+                        : '>'
+                    );
+                  }}
                 >
-                  <span style={{}}>{totalFilter}</span>
+                  <span>{totalFilter}</span>
                 </InputAdornment>
               ),
             }}

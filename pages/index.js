@@ -83,7 +83,7 @@ export default function ProjectManager() {
       'N/A',
       'N/A',
       'N/A',
-      '1500$',
+      '$1500',
       true
     ),
     createData(
