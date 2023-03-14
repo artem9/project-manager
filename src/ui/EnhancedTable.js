@@ -3,6 +3,8 @@ import * as React from 'react';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
+import Grid from '@mui/material/Grid';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Snackbar from '@mui/material/Snackbar';
@@ -26,6 +28,7 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import { TrendingUp } from '@mui/icons-material';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -148,12 +151,22 @@ function EnhancedTableHead(props) {
 }
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, rows, selected, setRows, setSelected } = props;
+  const {
+    filterPrice,
+    numSelected,
+    rows,
+    selected,
+    setFilterPrice,
+    setRows,
+    setSelected,
+    totalFilter,
+    setTotalFilter,
+  } = props;
+
   const [undo, setUndo] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openMenu, setOpenMenu] = React.useState(false);
-  const [totalFilter, setTotalFilter] = React.useState('>');
-  const [filterPrice, setFilterPrice] = React.useState('');
+
   const [alert, setAlert] = React.useState({
     open: false,
     color: '#FF3232',
@@ -386,6 +399,8 @@ export default function EnhancedTable(props) {
   const [orderBy, setOrderBy] = React.useState('name');
   const [selected, setSelected] = React.useState([]);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [filterPrice, setFilterPrice] = React.useState('');
+  const [totalFilter, setTotalFilter] = React.useState('>');
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -469,6 +484,28 @@ export default function EnhancedTable(props) {
     return newRows3;
   };
 
+  const priceFilters = (switchRows) => {
+    if (filterPrice !== '') {
+      const newRows = [...switchRows];
+
+      newRows.map((row) =>
+        eval(
+          `${filterPrice} ${
+            totalFilter === '=' ? '===' : totalFilter
+          } ${row.total.slice(1, row.total.length)}`
+        )
+          ? row.search === false
+            ? null
+            : (row.search = true)
+          : (row.search = false)
+      );
+
+      return newRows;
+    } else {
+      return switchRows;
+    }
+  };
+
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }} elevation={0}>
@@ -478,6 +515,10 @@ export default function EnhancedTable(props) {
           setRows={props.setRows}
           setSelected={setSelected}
           numSelected={selected.length}
+          filterPrice={filterPrice}
+          setFilterPrice={setFilterPrice}
+          totalFilter={totalFilter}
+          setTotalFilter={setTotalFilter}
         />
         <TableContainer>
           <Table
@@ -495,7 +536,7 @@ export default function EnhancedTable(props) {
             />
             <TableBody>
               {stableSort(
-                switchFilters().filter((row) => row.search),
+                priceFilters(switchFilters()).filter((row) => row.search),
                 getComparator(order, orderBy)
               )
                 .slice(
@@ -552,12 +593,40 @@ export default function EnhancedTable(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={props.rows.filter((row) => row.search).length}
+          count={
+            priceFilters(switchFilters()).filter((row) => row.search).length
+          }
           rowsPerPage={rowsPerPage}
           page={props.page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
+        <Grid container justifyContent="flex-end">
+          <Grid item>
+            {filterPrice !== '' ? (
+              <Chip
+                sx={{
+                  marginRight: '2em',
+                  backgroundColor: (theme) => theme.palette.common.blue,
+                  color: '#fff',
+                }}
+                label={
+                  totalFilter === '>'
+                    ? `Less than $${filterPrice}`
+                    : totalFilter === '<'
+                    ? `Greater than $${filterPrice}`
+                    : `Equal to $${filterPrice}`
+                }
+                onDelete={() => {
+                  setFilterPrice('');
+                  const newRows = [...props.rows];
+                  newRows.map((row) => (row.search = true));
+                  props.setRows(newRows);
+                }}
+              />
+            ) : null}
+          </Grid>
+        </Grid>
       </Paper>
     </Box>
   );
