@@ -76,6 +76,9 @@ export default function ProjectManager() {
   const theme = useTheme();
   const matchedLG = useMediaQuery(theme.breakpoints.down('lg'));
   const matchedMD = useMediaQuery(theme.breakpoints.down('md'));
+  const matchedSM = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const hidden = useMediaQuery(theme.breakpoints.up('sm'));
 
   const [rows, setRows] = useState([
     createData(
@@ -212,6 +215,143 @@ export default function ProjectManager() {
     setPage(0);
   };
 
+  const serviceQuestions = () => (
+    <>
+      <Grid item style={{ marginTop: matchedSM ? 20 : '5em' }}>
+        <Typography variant="h4">Service</Typography>
+      </Grid>
+      <Grid item>
+        <RadioGroup
+          aria-label="service"
+          name="service"
+          value={service}
+          onChange={(event) => {
+            setService(event.target.value);
+            setFeatures([]);
+          }}
+        >
+          <FormControlLabel
+            classes={{ label: classes.service }}
+            value="Website"
+            label="Website"
+            control={<Radio />}
+          />
+          <FormControlLabel
+            classes={{ label: classes.service }}
+            value="Mobile App"
+            label="Mobile App"
+            control={<Radio />}
+          />
+          <FormControlLabel
+            classes={{ label: classes.service }}
+            value="Custom Software"
+            label="Custom Software"
+            control={<Radio />}
+          />
+        </RadioGroup>
+      </Grid>
+    </>
+  );
+
+  const complexityQuestions = () => (
+    <Grid item style={{ marginBottom: matchedSM ? 50 : null }}>
+      <Grid
+        item
+        container
+        direction="column"
+        style={{ marginTop: matchedSM ? 50 : '5em' }}
+      >
+        <Grid item>
+          <Typography variant="h4">Complexity</Typography>
+        </Grid>
+        <Grid item>
+          <RadioGroup
+            aria-label="complexity"
+            name="complexity"
+            value={complexity}
+            onChange={(event) => setComplexity(event.target.value)}
+          >
+            <FormControlLabel
+              disabled={service === 'Website'}
+              classes={{ label: classes.service }}
+              value="Low"
+              label="Low"
+              control={<Radio />}
+            />
+            <FormControlLabel
+              disabled={service === 'Website'}
+              classes={{ label: classes.service }}
+              value="Medium"
+              label="Medium"
+              control={<Radio />}
+            />
+            <FormControlLabel
+              disabled={service === 'Website'}
+              classes={{ label: classes.service }}
+              value="High"
+              label="High"
+              control={<Radio />}
+            />
+          </RadioGroup>
+        </Grid>
+      </Grid>
+    </Grid>
+  );
+
+  const userQuestions = () => (
+    <Grid item style={{ alignSelf: matchedSM ? 'center' : 'flex-end' }}>
+      <Grid
+        item
+        container
+        direction="column"
+        style={{ marginTop: matchedSM ? 50 : '5em' }}
+      >
+        <Grid item>
+          <Typography variant="h4">Users</Typography>
+        </Grid>
+        <Grid item>
+          <RadioGroup
+            aria-label="users"
+            name="users"
+            value={users}
+            onChange={(event) => setUsers(event.target.value)}
+          >
+            <FormControlLabel
+              disabled={service === 'Website'}
+              classes={{
+                label: classes.service,
+                root: classes.users,
+              }}
+              value="0-10"
+              label="0-10"
+              control={<Radio />}
+            />
+            <FormControlLabel
+              disabled={service === 'Website'}
+              classes={{
+                label: classes.service,
+                root: classes.users,
+              }}
+              value="10-100"
+              label="10-100"
+              control={<Radio />}
+            />
+            <FormControlLabel
+              disabled={service === 'Website'}
+              classes={{
+                label: classes.service,
+                root: classes.users,
+              }}
+              value="100+"
+              label="100+"
+              control={<Radio />}
+            />
+          </RadioGroup>
+        </Grid>
+      </Grid>
+    </Grid>
+  );
+
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Grid
@@ -339,6 +479,8 @@ export default function ProjectManager() {
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
           fullWidth
+          fullScreen={matchedSM}
+          style={{ zIndex: 1302 }}
           maxWidth="md"
         >
           <Grid container justifyContent="center">
@@ -349,63 +491,46 @@ export default function ProjectManager() {
             </Grid>
           </Grid>
           <DialogContent>
-            <Grid container justifyContent="space-between">
+            <Grid
+              container
+              justifyContent="space-between"
+              direction={matchedSM ? 'column' : 'row'}
+            >
               <Grid item>
-                <Grid item container direction="column" sm>
+                <Grid
+                  item
+                  container
+                  direction="column"
+                  alignItems={matchedSM ? 'center' : undefined}
+                  sm
+                >
+                  {!hidden && serviceQuestions()}
+                  {!hidden && userQuestions()}
+                  {!hidden && complexityQuestions()}
                   <Grid item>
                     <TextField
                       label="Name"
                       id="name"
                       value={name}
                       variant="standard"
+                      style={{ width: matchedSM ? 250 : undefined }}
                       onChange={(event) => setName(event.target.value)}
-                      fullWidth
+                      fullWidth={!matchedSM}
                     />
                   </Grid>
                   <Grid
                     item
                     container
                     direction="column"
-                    style={{ marginTop: '5em' }}
+                    alignItems={matchedSM ? 'center' : undefined}
                   >
-                    <Grid item>
-                      <Typography variant="h4">Service</Typography>
-                    </Grid>
-                    <Grid item>
-                      <RadioGroup
-                        aria-label="service"
-                        name="service"
-                        value={service}
-                        onChange={(event) => {
-                          setService(event.target.value);
-                          setFeatures([]);
-                        }}
-                      >
-                        <FormControlLabel
-                          classes={{ label: classes.service }}
-                          value="Website"
-                          label="Website"
-                          control={<Radio />}
-                        />
-                        <FormControlLabel
-                          classes={{ label: classes.service }}
-                          value="Mobile App"
-                          label="Mobile App"
-                          control={<Radio />}
-                        />
-                        <FormControlLabel
-                          classes={{ label: classes.service }}
-                          value="Custom Software"
-                          label="Custom Software"
-                          control={<Radio />}
-                        />
-                      </RadioGroup>
-                    </Grid>
-                    <Grid item style={{ marginTop: '5em' }}>
+                    {hidden && serviceQuestions()}
+                    <Grid item style={{ marginTop: matchedSM ? 50 : '5em' }}>
                       <Select
                         disabled={service === 'Website'}
                         labelId="platforms"
-                        style={{ width: '12em' }}
+                        style={{ width: matchedSM ? 250 : '12em' }}
+                        MenuProps={{ style: { zIndex: 1302 } }}
                         id="platforms"
                         multiple
                         displayEmpty
@@ -435,65 +560,33 @@ export default function ProjectManager() {
                   style={{ marginTop: 16 }}
                   sm
                 >
-                  <Grid item>
+                  <Grid item style={{ marginTop: matchedSM ? 50 : 0 }}>
                     <DatePicker
                       value={date}
+                      PopperProps={{ style: { zIndex: 1302 } }}
                       onChange={(newDate) => setDate(newDate)}
                       inputFormat="MM/dd/yyyy"
                       renderInput={(params) => (
-                        <TextField {...params} variant="standard" />
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          style={{ width: matchedSM ? 250 : undefined }}
+                        />
                       )}
                     />
                   </Grid>
-                  <Grid item>
-                    <Grid
-                      item
-                      container
-                      direction="column"
-                      style={{ marginTop: '5em' }}
-                    >
-                      <Grid item>
-                        <Typography variant="h4">Complexity</Typography>
-                      </Grid>
-                      <Grid item>
-                        <RadioGroup
-                          aria-label="complexity"
-                          name="complexity"
-                          value={complexity}
-                          onChange={(event) =>
-                            setComplexity(event.target.value)
-                          }
-                        >
-                          <FormControlLabel
-                            disabled={service === 'Website'}
-                            classes={{ label: classes.service }}
-                            value="Low"
-                            label="Low"
-                            control={<Radio />}
-                          />
-                          <FormControlLabel
-                            disabled={service === 'Website'}
-                            classes={{ label: classes.service }}
-                            value="Medium"
-                            label="Medium"
-                            control={<Radio />}
-                          />
-                          <FormControlLabel
-                            disabled={service === 'Website'}
-                            classes={{ label: classes.service }}
-                            value="High"
-                            label="High"
-                            control={<Radio />}
-                          />
-                        </RadioGroup>
-                      </Grid>
-                    </Grid>
-                  </Grid>
+                  {hidden && complexityQuestions()}
                 </Grid>
               </Grid>
               <Grid item>
-                <Grid item container direction="column" sm>
-                  <Grid item>
+                <Grid
+                  item
+                  container
+                  direction="column"
+                  alignItems={matchedSM ? 'center' : undefined}
+                  sm
+                >
+                  <Grid item style={{ marginTop: matchedSM ? 50 : 0 }}>
                     <TextField
                       InputProps={{
                         startAdornment: (
@@ -504,85 +597,36 @@ export default function ProjectManager() {
                       id="total"
                       value={total}
                       variant="standard"
+                      style={{ width: matchedSM ? 250 : undefined }}
                       onChange={(event) => setTotal(event.target.value)}
                     />
                   </Grid>
-                  <Grid item style={{ alignSelf: 'flex-end' }}>
-                    <Grid
-                      item
-                      container
-                      direction="column"
-                      style={{ marginTop: '5em' }}
+                  {hidden && userQuestions()}
+                  <Grid item style={{ marginTop: matchedSM ? 50 : '5em' }}>
+                    <Select
+                      labelId="features"
+                      style={{ width: matchedSM ? 250 : '12em' }}
+                      MenuProps={{ style: { zIndex: 1302 } }}
+                      id="features"
+                      multiple
+                      displayEmpty
+                      variant="standard"
+                      value={features}
+                      renderValue={
+                        features.length > 0 ? undefined : () => 'Features'
+                      }
+                      onChange={(event) => setFeatures(event.target.value)}
                     >
-                      <Grid item>
-                        <Typography variant="h4">Users</Typography>
-                      </Grid>
-                      <Grid item>
-                        <RadioGroup
-                          aria-label="users"
-                          name="users"
-                          value={users}
-                          onChange={(event) => setUsers(event.target.value)}
-                        >
-                          <FormControlLabel
-                            disabled={service === 'Website'}
-                            classes={{
-                              label: classes.service,
-                              root: classes.users,
-                            }}
-                            value="0-10"
-                            label="0-10"
-                            control={<Radio />}
-                          />
-                          <FormControlLabel
-                            disabled={service === 'Website'}
-                            classes={{
-                              label: classes.service,
-                              root: classes.users,
-                            }}
-                            value="10-100"
-                            label="10-100"
-                            control={<Radio />}
-                          />
-                          <FormControlLabel
-                            disabled={service === 'Website'}
-                            classes={{
-                              label: classes.service,
-                              root: classes.users,
-                            }}
-                            value="100+"
-                            label="100+"
-                            control={<Radio />}
-                          />
-                        </RadioGroup>
-                      </Grid>
-                    </Grid>
+                      {service === 'Website'
+                        ? (featureOptions = websiteOptions)
+                        : null}
+                      {featureOptions.map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </Grid>
-                </Grid>
-                <Grid item style={{ marginTop: '5em' }}>
-                  <Select
-                    labelId="features"
-                    style={{ width: '12em' }}
-                    MenuProps={{ style: { zIndex: 1302 } }}
-                    id="features"
-                    multiple
-                    displayEmpty
-                    variant="standard"
-                    value={features}
-                    renderValue={
-                      features.length > 0 ? undefined : () => 'Features'
-                    }
-                    onChange={(event) => setFeatures(event.target.value)}
-                  >
-                    {service === 'Website'
-                      ? (featureOptions = websiteOptions)
-                      : null}
-                    {featureOptions.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </Select>
                 </Grid>
               </Grid>
             </Grid>
